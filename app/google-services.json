@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "831185731462",
+    "firebase_url": "https://sgnchat-5c92e-default-rtdb.firebaseio.com",
+    "project_id": "sgnchat-5c92e",
+    "storage_bucket": "sgnchat-5c92e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831185731462:android:b82f7dd9bb946ec18cf607",
+        "android_client_info": {
+          "package_name": "com.sgncreations.sGnchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "831185731462-u2bndlo05dpja6d81agqnadtqrjocoqg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgOTj-MTb9jETnJjVKdhbk03ANoKTnOkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "831185731462-u2bndlo05dpja6d81agqnadtqrjocoqg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
