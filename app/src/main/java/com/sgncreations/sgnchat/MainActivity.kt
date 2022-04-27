@@ -8,52 +8,49 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.sgncreations.sgnchat.databinding.ActivityMainBinding
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class MainActivity : AppCompatActivity() {
 
-//    private lateinit var binding : ActivityMainBinding
     private lateinit var userRecyclerView: RecyclerView
-    private lateinit var userList: ArrayList<User>
-    private lateinit var adapter: UserAdapter
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDbRef: DatabaseReference
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
 
-        mAuth = FirebaseAuth.getInstance()
-        mDbRef = FirebaseDatabase.getInstance().getReference()
+        firebaseAuth = FirebaseAuth.getInstance()
+        supportActionBar?.title = firebaseAuth.currentUser?.email
 
-        userList = ArrayList()
-        adapter = UserAdapter(this, userList)
+        val databaseReference = FirebaseDatabase.getInstance().reference
+        val userList = mutableListOf<User>()
+        val userAdapter = UserAdapter(this, userList)
 
-        supportActionBar?.title = mAuth.currentUser?.email
+        userRecyclerView = findViewById<RecyclerView?>(R.id.user_recycler_view).apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = userAdapter
+        }
 
-        userRecyclerView = findViewById(R.id.user_recycler_view)
-
-        userRecyclerView.layoutManager = LinearLayoutManager(this)
-        userRecyclerView.adapter = adapter
-
-        mDbRef.child("user").addValueEventListener(object: ValueEventListener{
+        databaseReference.child("user").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot){
                 userList.clear()
                 for(postSnapshot in snapshot.children){
                     val currentUser = postSnapshot.getValue(User::class.java)
-                    if(mAuth.currentUser?.uid != currentUser?.uid) {
-                        userList.add(currentUser!!)
+                    currentUser?.let {
+                        if(firebaseAuth.currentUser?.uid != it.uid) {
+                            userList.add(it)
+                        }
                     }
                 }
-                adapter.notifyDataSetChanged()
+                userAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
         })
     }
 
@@ -64,15 +61,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.logout){
-            mAuth.signOut()
+            firebaseAuth.signOut()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return true
         }
         return true
-
-
     }
-
-
 }
